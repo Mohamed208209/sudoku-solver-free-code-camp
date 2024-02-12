@@ -8,25 +8,26 @@ let solver = new Solver();
 suite('Unit Tests', () => {
     // #1: Logic handles a valid puzzle string of 81 characters
     test('#1 handle valid puzzle strings', function() {
-        assert.isTrue(solver.validate(Strings.puzzlesAndSolutions[0][0]), 'The first sample puzzle is a valid puzzle string.');
-        assert.isTrue(solver.validate(Strings.puzzlesAndSolutions[1][0]), 'The second sample puzzle is a valid puzzle string.');
-        assert.isTrue(solver.validate(Strings.puzzlesAndSolutions[2][0]), 'The third sample puzzle is a valid puzzle string.');
-        assert.isTrue(solver.validate(Strings.puzzlesAndSolutions[3][0]), 'The fourth sample puzzle is a valid puzzle string.');
-        assert.isTrue(solver.validate(Strings.puzzlesAndSolutions[4][0]), 'The fifth sample puzzle is a valid puzzle string.');
+        assert.isTrue(solver.validate(Strings.puzzlesAndSolutions[0][0]), 'The first sample puzzle should be a valid puzzle string');
+        assert.isTrue(solver.validate(Strings.puzzlesAndSolutions[1][0]), 'The second sample puzzle should be a valid puzzle string');
+        assert.isTrue(solver.validate(Strings.puzzlesAndSolutions[2][0]), 'The third sample puzzle should be a valid puzzle string');
+        assert.isTrue(solver.validate(Strings.puzzlesAndSolutions[3][0]), 'The fourth sample puzzle should be a valid puzzle string');
+        assert.isTrue(solver.validate(Strings.puzzlesAndSolutions[4][0]), 'The fifth sample puzzle should be a valid puzzle string');
     });
 
     // #2: Logic handles a puzzle string with invalid characters (not 1-9 or .)
     test('#2 handle puzzle strings with invalid characters', function() {
-        assert.isFalse(solver.validate(('*&!$@#$^*').repeat(9)), 'A puzzle with the characters *&!$@#$^* is invalid.');
-        assert.isFalse(solver.validate(('easyoidef').repeat(9)), 'A puzzle with the alphabetic characters is invalid.');
-        assert.isFalse(solver.validate(('d12hj...f').repeat(9)), 'A puzzle with characters and letters is invalid.');
+        assert.isFalse(solver.validate(('*&!$@#$^*').repeat(9)), 'A puzzle with the characters *&!$@#$^* should be invalid');
+        assert.isFalse(solver.validate(('easyoidef').repeat(9)), 'A puzzle with the alphabetic characters should be invalid');
+        assert.isFalse(solver.validate(('d12hj...f').repeat(9)), 'A puzzle with characters and letters should be invalid');
+        assert.isFalse(solver.validate('5..91372.3...8.5.9.9.25..8.68.47.23...95..46.7.4..d..5.2.......4..8916..85.72...3'), 'A puzzle with characters and letters should be invalid');
     });
 
     // #3: Logic handles a puzzle string that is not 81 characters in length
     test('#3 handle puzzle strings that are not 81 characters in length', function() {
-        assert.isFalse(solver.validate(('.').repeat(85)), 'A puzzle of length 85 is invalid.');
-        assert.isFalse(solver.validate(('123456789').repeat(10)), 'A puzzle of length 90 is invalid.');
-        assert.isFalse(solver.validate('123456789'), 'A puzzle of length 9 is invalid.');
+        assert.isFalse(solver.validate(('.').repeat(85)), 'A puzzle of length 85 should be invalid');
+        assert.isFalse(solver.validate(('123456789').repeat(10)), 'A puzzle of length 90 should be invalid');
+        assert.isFalse(solver.validate('123456789'), 'A puzzle of length 9 should be invalid');
     });
 
     // #4: Logic handles a valid row placement
@@ -94,10 +95,13 @@ suite('Unit Tests', () => {
 
     // #11: Invalid puzzle strings fail the solver
     test('#11 invalid puzzle strings fail the solver', function() {
-        assert.isFalse(solver.solve(('*&!$@#$^*').repeat(9)));
-        assert.isFalse(solver.solve(('easyoidef').repeat(9)));
-        assert.isFalse(solver.solve(('d12hj...f').repeat(9)));
-        assert.isFalse(solver.solve(('123456789').repeat(9)));
+        assert.isNull(solver.solve(('*&!$@#$^*').repeat(9)));
+        assert.isNull(solver.solve(('easyoidef').repeat(9)));
+        assert.isNull(solver.solve(('d12hj...f').repeat(9)));
+        assert.isNull(solver.solve(('123456789').repeat(9)));
+        assert.isNull(solver.solve(''));
+        assert.isNull(solver.solve('123456789'));
+        assert.isNull(solver.solve(('.........').repeat(9)));
     });
 
     // #12: Solver returns the expected solution for an incomplete puzzle

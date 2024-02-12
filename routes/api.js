@@ -4,6 +4,44 @@ const SudokuSolver = require('../controllers/sudoku-solver.js');
 
 module.exports = function (app) {
   
+  // Function taken from https://newbedev.com/express-logging-response-body
+  function logResponseBody(req, res, next) {
+    var oldWrite = res.write,
+        oldEnd = res.end;
+  
+    var chunks = [];
+  
+    res.write = function (chunk) {
+      chunks.push(chunk);
+  
+      return oldWrite.apply(res, arguments);
+    };
+  
+    res.end = function (chunk) {
+      if (chunk)
+        chunks.push(chunk);
+  
+      var body = Buffer.concat(chunks).toString('utf8');
+      console.log(req.path, body);
+  
+      oldEnd.apply(res, arguments);
+    };
+  
+    next();
+  }
+
+  function logRequestInfo(req, res, next) {
+    console.log();
+    console.log('Request Type: ', req.method);
+    console.log(`Request Data Sent: `, req.body);
+
+    next();
+  }
+
+  //app.use(logRequestInfo);
+  //app.use(logResponseBody);
+  
+
   let solver = new SudokuSolver();
 
   app.route('/api/check')
@@ -56,10 +94,12 @@ module.exports = function (app) {
     .post((req, res) => {
       const puzzle = req.body.puzzle;
 
-      // Guard statements to validate the puzzle sent to the route
+      // Makes sure puzzle is sent with the request
       if (!puzzle) return res.json({ "error": "Required field missing" });
+
+      // Check to see if the puzzle is valid
       if (!solver.validate(puzzle)) {
-        if (puzzle.length > 81) return res.json({ "error": "Expected puzzle to be 81 characters long" });
+        if (puzzle.length !== 81) return res.json({ "error": "Expected puzzle to be 81 characters long" });
         else return res.json({ "error": "Invalid characters in puzzle" });
       }
 

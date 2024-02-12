@@ -2,13 +2,25 @@ class SudokuSolver {
 
   validate(puzzleString) {
     // Check to see if the string is the right length
-    if (puzzleString.length !== 81) return false;
+    //if (puzzleString.length !== 81) return false;
 
     // Check to see if all the values are . or 0-9
-    let searchVal = puzzleString.search(/[^0-9.]/g);
+    //let searchVal = puzzleString.search(/[^.0-9]/g);
+    let numerals = puzzleString.match(/[1-9]/g);
+    let periods = puzzleString.match(/[.]/g)
 
-    if (searchVal === -1) return true;
-    else return false;
+    let test1 = periods ? periods.length : 0;
+    let test2 = numerals ? numerals.length : 0; 
+
+    //console.log(test1, test2);
+    //console.log(test1 + test2 === 81);
+
+    return test1 + test2 === 81;
+
+    //if (searchVal === -1) return true;
+    //else return false;
+
+    //return test;
 
   }
 
@@ -96,11 +108,10 @@ class SudokuSolver {
 
   solve(puzzleString) {
     if (!this.validate(puzzleString)) {
-      return false;
+      return null;
     }
     // Return the string if the first test is passed and there are no periods in the string
     else if (puzzleString.split("").indexOf(".") < 0) {
-      
       // Make sure the values in the puzzle are correct and there are no conflicts
       const puzzleCheck = puzzleString.split("").every((val, index, array) => {
         let row = Math.floor(index / 9);
@@ -110,8 +121,8 @@ class SudokuSolver {
                 && this.checkRegionPlacement(puzzleString, row + 1, column + 1, val);
       });
       
-      // Return false if the puzzle check is false
-      if (!puzzleCheck) return puzzleCheck;
+      // Return null if the puzzle check is false
+      if (!puzzleCheck) return null;
 
       // Otherwise return the string input
       return puzzleString;
@@ -157,9 +168,16 @@ class SudokuSolver {
       //console.log(coordinatesDict);
       //console.log(Object.values(coordinatesDict));
 
-      if (Object.entries(coordinatesDict).length === 0) {
+      // Return the string if there are no possible values to be chosen from in the dictionary
+      if (Object.entries(coordinatesDict).length === 0 && puzzleString.split("").indexOf(".") < 0) {
         return puzzleString;
       }
+
+      // Return null if the dictionary doesn't contain any coordinate keys mapped to 1 value
+      if (!Object.values(coordinatesDict).map(val => val ? val.length : 0).includes(1) && puzzleString.includes(".")) {
+        console.log
+        return null;
+      };
 
       return this.solve(this.createNewPuzzleDict(puzzleString, coordinatesDict))
 
